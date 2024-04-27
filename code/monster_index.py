@@ -5,9 +5,11 @@ class MonsterIndex:
         self.display_surface = pygame.display.get_surface()
         self.fonts = fonts
         self.monsters = monsters
+        self.frame_index = 0
         
         # frames
         self.icon_frames = monster_frames['icons']
+        self.monsters_frames = monster_frames['monsters']
         
         # tint surf
         self.tint_surf = pygame.Surface((WINDOW_WIDTH, WINDOW_HEIGHT))
@@ -70,9 +72,39 @@ class MonsterIndex:
                 self.display_surface.blit(text_surf, text_rect)
                 self.display_surface.blit(icon_surf, icon_rect)
         
+        # lines 
+        for i in range(min(self.visible_items, len(self.monsters))):
+            y = self.main_rect.top + self.item_height * i
+            left = self.main_rect.left
+            right = self.main_rect.left + self.list_width
+            pygame.draw.line(self.display_surface, COLORS['light-gray'], (left, y), (right, y))
+        
+        # shadow
+        shadow_surf = pygame.Surface((4, self.main_rect.height))
+        shadow_surf.set_alpha(100)
+        self.display_surface.blit(shadow_surf, (self.main_rect.left + self.list_width - 4, self.main_rect.top)) 
+    
+    def display_main(self, dt):
+        # data
+        monster = self.monsters[self.index]
+        
+        # main bg
+        rect = pygame.FRect(self.main_rect.left + self.list_width, self.main_rect.top, self.main_rect.width - self.list_width, self.main_rect.height)
+        pygame.draw.rect(self.display_surface, COLORS['dark'], rect, 0, 12, 0, 12, 0)
+        
+        # monster display
+        top_rect = pygame.FRect(rect.topleft, (rect.width, rect.height * 0.4))
+        pygame.draw.rect(self.display_surface, COLORS[monster.element], top_rect, 0, 0, 0, 12)
+        
+        # monster animation
+        self.frame_index += ANIMATION_SPEED * dt
+        monster_surf = self.monsters_frames[monster.name]['idle'][int(self.frame_index) % len(self.monsters_frames[monster.name]['idle'])]
+        monster_rect = monster_surf.get_frect(center = top_rect.center)
+        self.display_surface.blit(monster_surf, monster_rect)       
+
     def update(self, dt):
         self.input()
         self.display_surface.blit(self.tint_surf, (0,0))
         self.display_list()
-        # display the main section
+        self.display_main(dt)
         

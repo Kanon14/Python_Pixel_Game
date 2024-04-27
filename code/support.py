@@ -86,6 +86,18 @@ def tmx_importer(*path):
             tmx_dict[file.split('.')[0]] = load_pygame(join(folder_path, file))
     return tmx_dict     
 
+def monster_importer(cols, rows, *path):
+    monster_dict = {}
+    for folder_path, sub_folders, image_names in walk(join(*path)):
+        for image in image_names:
+            image_name = image.split('.')[0]
+            monster_dict[image_name] = {}
+            frame_dict = import_tilemap(cols, rows, *path, image_name)
+            for row, key in enumerate(('idle', 'attack')):
+                monster_dict[image_name][key] = [frame_dict[(col, row)] for col in range(cols)]
+    
+    return monster_dict
+
 # game functions
 def check_connections(radius, entity, target, tolerance=30):
     relation = vector(target.rect.center) - vector(entity.rect.center)
