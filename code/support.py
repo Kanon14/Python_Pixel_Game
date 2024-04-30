@@ -99,6 +99,14 @@ def monster_importer(cols, rows, *path):
     return monster_dict
 
 # game functions
+def draw_bar(surface, rect, value, max_value, color, bg_color, radius=1):
+    ratio = rect.width / max_value
+    bg_rect = rect.copy()
+    progress = max(0, min(rect.width, value * ratio))
+    progress_rect = pygame.FRect(rect.topleft, (progress, rect.height))
+    pygame.draw.rect(surface, bg_color, bg_rect, 0, radius)
+    pygame.draw.rect(surface, color, progress_rect, 0, radius)
+
 def check_connections(radius, entity, target, tolerance=30):
     relation = vector(target.rect.center) - vector(entity.rect.center)
     if relation.length() < radius:
