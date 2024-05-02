@@ -7,8 +7,9 @@ from sprites import Sprite, MonsterPatchSprite, AnimatedSprite, BorderSprite, Co
 from entities import Player, Character
 from groups import AllSprites
 from dialog import DialogTree
-
 from monster_index import MonsterIndex
+from battle import Battle
+
 from support import *
 from monster import Monster
 
@@ -32,6 +33,14 @@ class Game:
             7: Monster('Pouch', 3)
         }
         
+        self.dummy_monsters = {
+            0: Monster('Atrox', 12),
+            1: Monster('Sparchu', 15),
+            2: Monster('Gulfin', 19),
+            3: Monster('Jacana', 2),
+            4: Monster('Pouch', 3)
+        }
+        
         # groups
         self.all_sprites = AllSprites()
         self.collision_sprites = pygame.sprite.Group()
@@ -53,6 +62,7 @@ class Game:
         self.dialog_tree = None
         self.monster_index = MonsterIndex(self.player_monsters, self.fonts, self.monster_frames)
         self.index_open = False
+        self.battle = Battle(self.player_monsters, self.dummy_monsters, self.monster_frames, self.bg_frames['forest'], self.fonts)
         
     def import_assets(self):
         self.tmx_maps = tmx_importer('..', 'data', 'maps')
@@ -75,6 +85,8 @@ class Game:
             'small': pygame.font.Font(join('..', 'graphics', 'fonts', 'PixeloidSans.ttf'), 14),
             'bold': pygame.font.Font(join('..', 'graphics', 'fonts', 'dogicapixelbold.otf'), 20)
         }
+        
+        self.bg_frames = import_folder_dict('..', 'graphics', 'backgrounds')
             
     def setup(self, tmx_map, player_start_pos):
         # clear the map
@@ -141,7 +153,7 @@ class Game:
 
     # dialog system
     def input(self):
-        if not self.dialog_tree:
+        if not self.dialog_tree and not self.battle:
             keys = pygame.key.get_just_pressed()
             if keys[pygame.K_SPACE]:
                 for character in self.character_sprites:
@@ -154,8 +166,7 @@ class Game:
             if keys[pygame.K_RETURN]:
                 self.index_open = not self.index_open
                 self.player.blocked = not self.player.blocked
-            
-                    
+                        
     def create_dialog(self, character):
         if not self.dialog_tree:
             self.dialog_tree = DialogTree(character, self.player, self.all_sprites, self.fonts['dialog'], self.end_dialog)
@@ -210,6 +221,7 @@ class Game:
             # overlays
             if self.dialog_tree: self.dialog_tree.update()
             if self.index_open: self.monster_index.update(dt)
+            if self.battle: self.battle.update(dt)
             
             self.tint_screen(dt)    
             pygame.display.update()
