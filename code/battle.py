@@ -18,6 +18,15 @@ class Battle:
         
         # control
         self.current_monster = None
+        self.selection_mode = None
+        self.selection_side = 'player'
+        self.indexes = {
+            'general': 0,
+            'monster': 0,
+            'attacks': 0,
+            'switch': 0,
+            'target': 0
+        }
         
         self.setup()
         
@@ -56,11 +65,25 @@ class Battle:
                 monster_sprite.monster.initiative = 0
                 monster_sprite.set_highlight(True)
                 self.current_monster = monster_sprite
+                if self.player_sprites in monster_sprite.groups():
+                    self.selection_mode = 'general'
     
     def update_all_monsters(self, option):
         for monster_sprite in self.player_sprites.sprites() + self.opponent_sprites.sprites():
             monster_sprite.monster.paused = True if option == 'pause' else False
-            
+    
+    # ui
+    def draw_ui(self):
+        if self.current_monster:
+            if self.selection_mode == 'general':
+                self.draw_general()
+    
+    def draw_general(self):
+        for index, (option, data_dict) in enumerate(BATTLE_CHOICES['full'].items()):
+            surf = self.monster_frames['ui'][data_dict['icon']]
+            rect = surf.get_frect(center = self.current_monster.rect.midright + data_dict['pos'])
+            self.display_surf.blit(surf, rect)
+       
     def update(self, dt):
         # update
         self.battle_sprites.update(dt)
@@ -69,3 +92,4 @@ class Battle:
         # drawing 
         self.display_surf.blit(self.bg_surf, (0, 0))
         self.battle_sprites.draw(self.current_monster)
+        self.draw_ui()
