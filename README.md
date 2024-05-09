@@ -18,3 +18,5 @@ Audio used in the video trailer:
 https://opengameart.org/content/porkymon-battle-theme
 https://opengameart.org/content/face-the-facts
 https://opengameart.org/content/jay-the-doggo-music
+
+Learning timestamp: **8:20:47**
