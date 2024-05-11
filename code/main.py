@@ -30,7 +30,7 @@ class Game:
             4: Monster('Sparchu', 24),
             5: Monster('Gulfin', 24),
             6: Monster('Jacana', 2),
-            7: Monster('Pouch', 3)
+            7: Monster('Pouch', 3),
         }
         
         self.dummy_monsters = {
