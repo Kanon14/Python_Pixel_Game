@@ -13,8 +13,6 @@ class Monster:
         self.health = self.base_stats['max_health'] * self.level
         self.energy = self.base_stats['max_energy'] * self.level
         self.initiative = 0
-        self.health -= randint(0, 200)
-        self.energy -= randint(0, 100)
         self.abilities = MONSTER_DATA[name]['abilities']
         
         # experience
@@ -50,6 +48,12 @@ class Monster:
             (self.energy, self.get_stat('max_energy')),
             (self.initiative, 100)
         )
+        
+    def reduce_energy(self, attack):
+        self.energy -= ATTACK_DATA[attack]['cost']
+        
+    def get_base_damage(self, attack):
+        return self.get_stat('attack') * ATTACK_DATA[attack]['amount']
         
     def update(self, dt):
         if not self.paused: 
