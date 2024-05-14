@@ -19,4 +19,4 @@ https://opengameart.org/content/porkymon-battle-theme
 https://opengameart.org/content/face-the-facts
 https://opengameart.org/content/jay-the-doggo-music
 
-Learning timestamp: **9:52:35**
+Learning timestamp: **10:18:25**
